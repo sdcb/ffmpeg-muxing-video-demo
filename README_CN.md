@@ -1,47 +1,47 @@
-# ��ͼ������ת��ΪMP4��ʽ����Ƶ��ʹ��C# Sdcb.FFmpeg��
+﻿# 将图像序列转换为MP4格式的视频（使用C# Sdcb.FFmpeg）
 
-**[English](README.md)** | **��������**
+**[English](README.md)** | **简体中文**
 
-��ʾ����ʾ�����ʹ��C# Sdcb.FFmpeg�⽫ͼ�����кϳ���Ƶ��
+本示例演示了如何使用C# Sdcb.FFmpeg库将图像序列合成视频。
 
-## ����
+## 概述
 
-����Ŀչʾ�����ʹ��C#�е�Sdcb.FFmpeg�⽫һϵ��ͼ��ת����MP4��Ƶ������ṹ���ش�ָ���ļ��ж�ȡͼ�񣬽��벢��������ΪMP4�ļ�������Ŀʹ���� `Sdcb.FFmpeg` �⣬������ [����](https://github.com/sdcb/Sdcb.FFmpeg) �ҵ���
+该项目展示了如何使用C#中的Sdcb.FFmpeg库将一系列图像转换成MP4视频。代码结构化地从指定文件夹读取图像，解码并编码它们为MP4文件。该项目使用了 `Sdcb.FFmpeg` 库，可以在 [这里](https://github.com/sdcb/Sdcb.FFmpeg) 找到。
 
-## �ؼ�����
+## 关键配置
 
-1. **Դ�ļ���**: ����ͼ�����е��ļ��С�
+1. **源文件夹**: 包含图像序列的文件夹。
    ```csharp
    string sourceFolder = @".\src\%03d.jpg";
    ```
-   - ���ַ���ָ����Դͼ����ļ��к�����ģʽ��`%03d`���ֱ�ʾͼ������λ�������������磬001.jpg��002.jpg�ȣ���
+   - 该字符串指定了源图像的文件夹和命名模式。`%03d`部分表示图像以三位数字命名（例如，001.jpg，002.jpg等）。
 
-2. **֡��**: �����Ƶ��֡�ʡ�
+2. **帧率**: 输出视频的帧率。
    ```csharp
    AVRational frameRate = new(10, 1);
    ```
-   - �ⶨ������Ƶ��֡�ʡ��ڴ�ʾ���У�֡������Ϊÿ��10֡��
+   - 这定义了视频的帧率。在此示例中，帧率设置为每秒10帧。
 
-3. **����ļ�**: �����Ƶ�ļ������ơ�
+3. **输出文件**: 输出视频文件的名称。
    ```csharp
    string outputFile = "output.mp4";
    ```
-   - ��ָ�������ɵ�MP4�ļ������ơ�
+   - 这指定了生成的MP4文件的名称。
 
-4. **������**: �����Ƶ�ı����ʡ�
+4. **比特率**: 输出视频的比特率。
    ```csharp
    long bitRate = 2 * 1024 * 1024; // 2M
    ```
-   - �������������Ƶ�ı����ʣ�ȷ����Ƶ�������ļ���С֮���ƽ�⡣���������������Ϊ2Mbps��
+   - 这设置了输出视频的比特率，确保视频质量与文件大小之间的平衡。在这里，比特率设置为2Mbps。
 
-## ��������
+## 步骤流程
 
-1. **��ʼ����־��¼**:
+1. **初始化日志记录**:
    ```csharp
    FFmpegLogger.LogWriter = (l, m) => Console.Write($"[{l}] {m}");
    ```
 
-2. **��ԴFormatContext**:
+2. **打开源FormatContext**:
    ```csharp
    using FormatContext srcFc = FormatContext.OpenInputUrl(sourceFolder, options: new MediaDictionary
    {
@@ -50,13 +50,13 @@
    srcFc.LoadStreamInfo();
    ```
 
-3. **��ȡԴ��Ƶ���ͱ������**:
+3. **获取源视频流和编码参数**:
    ```csharp
    MediaStream srcVideo = srcFc.GetVideoStream();
    CodecParameters srcCodecParameters = srcVideo.Codecpar!;
    ```
 
-4. **��ʼ��������**:
+4. **初始化解码器**:
    ```csharp
    using CodecContext videoDecoder = new(Codec.FindDecoderById(srcCodecParameters.CodecId))
    {
@@ -65,14 +65,14 @@
    videoDecoder.Open();
    ```
 
-5. **�������FormatContext**:
+5. **分配输出FormatContext**:
    ```csharp
    using FormatContext dstFc = FormatContext.AllocOutput(OutputFormat.Guess("mp4"));
    dstFc.VideoCodec = Codec.CommonEncoders.Libx264;
    MediaStream vstream = dstFc.NewStream(dstFc.VideoCodec);
    ```
 
-6. **��ʼ��������**:
+6. **初始化编码器**:
    ```csharp
    using CodecContext vcodec = new(dstFc.VideoCodec)
    {
@@ -88,14 +88,14 @@
    vstream.TimeBase = vcodec.TimeBase;
    ```
 
-7. **��IO Context��д��ͷ��**:
+7. **打开IO Context并写入头部**:
    ```csharp
    using IOContext io = IOContext.OpenWrite(outputFile);
    dstFc.Pb = io;
    dstFc.WriteHeader();
    ```
 
-8. **��ȡ�����롢ת�������벢д���**:
+8. **读取、解码、转换、编码并写入包**:
    ```csharp
    foreach (Packet packet in srcFc
        .ReadPackets().Where(x => x.StreamIndex == srcVideo.Index)
@@ -118,15 +118,15 @@
    dstFc.WriteTrailer();
    ```
 
-## ������
+## 依赖项
 
-- Sdcb.FFmpeg�⣬������ [����](https://github.com/sdcb/Sdcb.FFmpeg) �ҵ���
+- Sdcb.FFmpeg库，可以在 [这里](https://github.com/sdcb/Sdcb.FFmpeg) 找到。
 
-## ���в���
+## 运行步骤
 
-1. ȷ���Ѱ�װSdcb.FFmpeg�⡣
-2. ��ͼ�����з�����ָ����Դ�ļ����У����� `.\src\`�������� `001.jpg`��`002.jpg`�ȣ���
-3. ������Ҫ�������ؼ����á�
-4. ���д��������� `output.mp4` �ļ���
+1. 确保已安装Sdcb.FFmpeg库。
+2. 将图像序列放置在指定的源文件夹中（例如 `.\src\`，名称如 `001.jpg`、`002.jpg`等）。
+3. 如有需要，调整关键配置。
+4. 运行代码以生成 `output.mp4` 文件。
 
-����Ŀ��һ��ʹ��Sdcb.FFmpeg���һϵ��ͼ�񴴽���Ƶ��ʵ��ʾ�������ݾ�������������á�
+该项目是一个使用Sdcb.FFmpeg库从一系列图像创建视频的实用示例。根据具体需求调整配置。
