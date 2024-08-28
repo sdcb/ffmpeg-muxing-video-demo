@@ -44,7 +44,12 @@ using IOContext io = IOContext.OpenWrite(outputFile);
 dstFc.Pb = io;
 dstFc.WriteHeader();
 
-// srcFc.ReadPackets() -- stream ->
+// src        -- srcFc.ReadPackets()          -->
+// src Packet -- DecodePackets(videoDecoder)  -->
+// src Frame  -- ConvertFrames(vcodec)        -->
+// dst Frame  -- EncodeFrames(vcodec)         -->
+// dst Packet -- dstFc.InterleavedWritePacket -->
+// dst
 foreach (Packet packet in srcFc
     .ReadPackets().Where(x => x.StreamIndex == srcVideo.Index)
     .DecodePackets(videoDecoder)
