@@ -1,10 +1,10 @@
-# ffmpeg-muxing-video
+# Image Sequence to MP4 with C# Sdcb.FFmpeg
 
 This demo shows how to use the C# Sdcb.FFmpeg library to mux a video from an image sequence.
 
 ## Overview
 
-This project demonstrates how to convert a sequence of images into an MP4 video using the Sdcb.FFmpeg library in C#. The code is structured to read images from a specified folder, decode them, and encode them into an MP4 file. Below are the key configurations you can adjust to customize the conversion process.
+This project demonstrates how to convert a sequence of images into an MP4 video using the Sdcb.FFmpeg library in C#. The code is structured to read images from a specified folder, decode them, and encode them into an MP4 file. This project utilizes the `Sdcb.FFmpeg` library, which can be found [here](https://github.com/sdcb/Sdcb.FFmpeg).
 
 ## Key Configurations
 
@@ -118,7 +118,7 @@ This project demonstrates how to convert a sequence of images into an MP4 video 
 
 ## Dependencies
 
-- Sdcb.FFmpeg library
+- Sdcb.FFmpeg library, which can be found [here](https://github.com/sdcb/Sdcb.FFmpeg).
 
 ## How to Run
 
