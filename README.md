@@ -1,5 +1,7 @@
 # Image Sequence to MP4 with C# Sdcb.FFmpeg
 
+**English** | **[¼òÌåÖÐÎÄ](README_CN.md)**
+
 This demo shows how to use the C# Sdcb.FFmpeg library to mux a video from an image sequence.
 
 ## Overview
